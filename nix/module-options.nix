@@ -158,6 +158,13 @@ in
                         username is valid on GitLab and GitHub.
                       '';
                     };
+                    ssh_deploy_key_path = mkOption {
+                      type = nullOr path;
+                      default = null;
+                      description = ''
+                        Path to the SSH private key used to authenticate to the Git remote.
+                      '';
+                    };
                   };
                 };
               };

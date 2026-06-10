@@ -500,6 +500,27 @@ string
 
 
 
+## services\.comin\.remotes\.\*\.auth\.ssh_deploy_key_path
+
+
+
+Path to the SSH private key used to authenticate to the Git remote\.
+
+
+
+*Type:*
+null or absolute path
+
+
+
+*Default:*
+
+```nix
+null
+```
+
+
+
 ## services\.comin\.remotes\.\*\.auth\.username
 
 

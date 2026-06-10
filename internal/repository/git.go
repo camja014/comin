@@ -3,29 +3,27 @@ package repository
 import (
 	"context"
 	"fmt"
-	"time"
 	"os"
+	"time"
 
 	"github.com/ProtonMail/go-crypto/openpgp"
 	"github.com/go-git/go-git/v5"
 	gitConfig "github.com/go-git/go-git/v5/config"
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/object"
+	"github.com/go-git/go-git/v5/plumbing/transport"
 	"github.com/go-git/go-git/v5/plumbing/transport/http"
+	"github.com/go-git/go-git/v5/plumbing/transport/ssh"
 	"github.com/nlewo/comin/internal/types"
 	"github.com/sirupsen/logrus"
 )
 
-func RepositoryClone(directory, url, commitId, accessToken string) error {
+// Is this used?
+func RepositoryClone(directory, url, commitId string, authMethod transport.AuthMethod) error {
 	options := &git.CloneOptions{
 		URL:        url,
 		NoCheckout: true,
-	}
-	if accessToken != "" {
-		options.Auth = &http.BasicAuth{
-			Username: "comin",
-			Password: accessToken,
-		}
+		Auth:       authMethod,
 	}
 	repository, err := git.PlainClone(directory, false, options)
 	if err != nil {
@@ -109,6 +107,13 @@ func fetch(r repository, remote types.Remote) (err error) {
 			Username: remote.Auth.Username,
 			Password: remote.Auth.AccessToken,
 		}
+	} else if remote.Auth.SshDeployKeyPath != "" {
+		sshPubKeyAuth, err := ssh.NewPublicKeysFromFile(remote.Auth.Username, remote.Auth.SshDeployKeyPath, "")
+		if err != nil {
+			logrus.Errorf("Failed to load SSH private key from '%s': %s", remote.Auth.SshDeployKeyPath, err)
+			return fmt.Errorf("loading SSH private key failed: %s", err)
+		}
+		fetchOptions.Auth = sshPubKeyAuth
 	}
 
 	// TODO: we should get a parent context
