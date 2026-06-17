@@ -521,6 +521,30 @@ null
 
 
 
+## services\.comin\.remotes\.\*\.auth\.ssh_known_hosts_path
+
+
+
+Path to the known_hosts file used to verify the SSH
+host key of the Git remote\. Defaults to
+/etc/ssh/ssh_known_hosts when unset\. The remote’s host
+key must be present in this file\.
+
+
+
+*Type:*
+null or absolute path
+
+
+
+*Default:*
+
+```nix
+null
+```
+
+
+
 ## services\.comin\.remotes\.\*\.auth\.username
 
 

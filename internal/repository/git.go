@@ -113,6 +113,19 @@ func fetch(r repository, remote types.Remote) (err error) {
 			logrus.Errorf("Failed to load SSH private key from '%s': %s", remote.Auth.SshDeployKeyPath, err)
 			return fmt.Errorf("loading SSH private key failed: %s", err)
 		}
+		// Set the host key callback explicitly. Otherwise go-git builds a
+		// default one from $HOME/.ssh/known_hosts, which fails with
+		// "$HOME is not defined" when running as a systemd service.
+		knownHostsPath := remote.Auth.SshKnownHostsPath
+		if knownHostsPath == "" {
+			knownHostsPath = "/etc/ssh/ssh_known_hosts"
+		}
+		hostKeyCallback, err := ssh.NewKnownHostsCallback(knownHostsPath)
+		if err != nil {
+			logrus.Errorf("Failed to load SSH known_hosts from '%s': %s", knownHostsPath, err)
+			return fmt.Errorf("loading SSH known_hosts failed: %s", err)
+		}
+		sshPubKeyAuth.HostKeyCallback = hostKeyCallback
 		fetchOptions.Auth = sshPubKeyAuth
 	}
 
