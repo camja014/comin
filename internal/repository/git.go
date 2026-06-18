@@ -11,36 +11,11 @@ import (
 	gitConfig "github.com/go-git/go-git/v5/config"
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/object"
-	"github.com/go-git/go-git/v5/plumbing/transport"
 	"github.com/go-git/go-git/v5/plumbing/transport/http"
 	"github.com/go-git/go-git/v5/plumbing/transport/ssh"
 	"github.com/nlewo/comin/internal/types"
 	"github.com/sirupsen/logrus"
 )
-
-// Is this used?
-func RepositoryClone(directory, url, commitId string, authMethod transport.AuthMethod) error {
-	options := &git.CloneOptions{
-		URL:        url,
-		NoCheckout: true,
-		Auth:       authMethod,
-	}
-	repository, err := git.PlainClone(directory, false, options)
-	if err != nil {
-		return err
-	}
-	worktree, err := repository.Worktree()
-	if err != nil {
-		return err
-	}
-	err = worktree.Checkout(&git.CheckoutOptions{
-		Hash: plumbing.NewHash(commitId),
-	})
-	if err != nil {
-		return fmt.Errorf("cannot checkout the commit ID %s: '%s'", commitId, err)
-	}
-	return nil
-}
 
 func getRemoteCommitHash(r repository, remote, branch string) *plumbing.Hash {
 	remoteBranch := fmt.Sprintf("refs/remotes/%s/%s", remote, branch)
