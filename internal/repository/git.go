@@ -97,8 +97,8 @@ func fetch(r repository, remote types.Remote) (err error) {
 		}
 		hostKeyCallback, err := ssh.NewKnownHostsCallback(knownHostsPath)
 		if err != nil {
-			logrus.Errorf("Failed to load SSH known_hosts from '%s': %s", knownHostsPath, err)
-			return fmt.Errorf("loading SSH known_hosts failed: %s", err)
+			logrus.Errorf("Failed to load SSH known_hosts from '%s'", knownHostsPath)
+			return fmt.Errorf("loading SSH known_hosts file failed: %s", knownHostsPath)
 		}
 		sshPubKeyAuth.HostKeyCallback = hostKeyCallback
 		fetchOptions.Auth = sshPubKeyAuth
