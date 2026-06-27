@@ -159,14 +159,14 @@ in
                       '';
                     };
                     ssh_deploy_key_path = mkOption {
-                      type = nullOr path;
+                      type = str;
                       default = "";
                       description = ''
                         Path to the SSH private key used to authenticate to the Git remote.
                       '';
                     };
                     ssh_known_hosts_path = mkOption {
-                      type = nullOr path;
+                      type = str;
                       default = "";
                       description = ''
                         Path to the known_hosts file used to verify the SSH
